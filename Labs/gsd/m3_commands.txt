@@ -1,0 +1,32 @@
+# Clone Lab repo
+git clone https://github.com/nigelpoulton/gsd.git
+
+# Go to Docker container folder
+cd ~/Developer/docker/labs/gsd/container
+
+# Build Docker image
+docker image build -t foomantics/gsd:ctr2023 .
+
+# Login to Docker CLI client
+docker login -u foomantics
+
+# Push image to Docker hub
+docker image push foomantics/gsd:ctr2023
+
+# Run Docker container 
+docker container run -d --name web -p 8000:8080 foomantics/gsd:ctr2023
+
+# Verify container running
+docker container ls
+
+# Stop Docker container
+docker container stop web
+
+# Verify container stopped
+docker container ls -a 
+
+# Delete container rm web
+docker container rm web
+
+# Verify container deleted
+docker container ls -a 

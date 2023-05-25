@@ -1,0 +1,90 @@
+# Go to Docker compose folder
+cd ~/Developer/docker/labs/gsd/compose
+
+# Launch Docker web frontend and redis containers
+docker-compose up --detach
+
+# Verify containers are running
+docker container ls
+
+# Bring down containers
+docker-compose down --volumes
+
+# Verify containers and volumes destroyed
+docker container ls
+docker volume ls
+
+# Launch five multipass nodes
+multipass launch docker --name node1
+multipass launch docker --name node2
+multipass launch docker --name node3
+multipass launch docker --name node4
+multipass launch docker --name node5
+
+# Verify nodes are up
+multipass list
+
+# Initialize Docker swarm with manager node
+docker swarm init --advertise-addr 192.168.0.28
+
+# Add managers to Docker swarm
+docker swarm join --token SWMTKN-1-XYZ 192.168.0.28:2377
+
+# Add workers to Docker swarm
+docker swarm join --token SWMTKN-1-XYZ 192.168.0.28:2377
+
+# Stop business apps being scheduled to manager nodes
+docker node update --availability drain node1
+docker node update --availability drain node2
+docker node update --availability drain node3
+
+# Imperatively create Docker service object
+docker service create --name web -p 8080:8080 --replicas 3 foomantics/gsd:web2023
+
+# Verify Docker worker nodes are running service
+docker service ps web
+
+# Scale up service
+docker service scale web=10
+
+# Remove service
+docker service rm web
+
+# Verify service removed
+docker service ls
+
+# Go to Swarm folder
+cd ~/gsd/swarm/
+
+# Build Swarm image
+docker image build -t foomantics/gsd:swarm2023 .
+
+# Ensure image created
+docker image ls
+
+# Publish Swarm image
+docker image push foomantics/gsd:swarm2023
+
+# Deploy Swarm image from compose file
+docker stack deploy -c compose.yml counter
+
+# Verify stack has correct services
+docker stack ls
+
+# See service details
+docker stack services counter
+
+# Remove counter service
+docker stack rm counter
+
+# Stop nodes
+multipass stop node1 node2 node3 node4 node5
+
+# Delete nodes
+multipass delete node1 node2 node3 node4 node5
+
+# Purge nodes
+multipass purge
+
+# Delete swarm
+docker swarm leave --force
