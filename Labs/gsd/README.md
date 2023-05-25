@@ -1,6 +1,8 @@
 # Getting Started with Docker
 
-Official repo for Getting Started with Docker video training course by [@nigelpoulton](https://twitter.com/nigelpoulton)
+Copied repo for Getting Started with Docker video training course by [@nigelpoulton](https://twitter.com/nigelpoulton)
+
+My work can be found in 'm3_commands' and 'm4_commands' TXT files.
 
 ## first-container
 
